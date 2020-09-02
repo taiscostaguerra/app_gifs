@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Future<Map> _getGifs() async {
     http.Response response;
 
-    if (_search == null) {
+    if (_search == "" || _search == null) {
       response = await http.get(
           "https://api.giphy.com/v1/gifs/trending?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&limit=20&rating=g");
     } else
@@ -94,6 +94,11 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(
               color: Color(0xFFCAC7C7),
             ),
+            onChanged: (text) {
+              setState(() {
+                _search = text;
+              });
+            },
           ),
         ),
         Expanded(
@@ -117,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                     default:
                       if (snapshot.hasError)
                         return Container();
-                      else 
+                      else
                         return _createGifTable(context, snapshot);
                   }
                 }))
@@ -125,23 +130,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot){
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10.0,
-        mainAxisSpacing: 10.0
-        ), 
-      itemCount: snapshot.data["data"].length,  
-      itemBuilder: (context, index){
-        return GestureDetector(
-          child: Image.network(snapshot.data["data"][index]["images"]["fixed_height"]["url"],
-          height: 300.0,
-          fit: BoxFit.cover,
+  Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot) {
+    if (snapshot.data["data"].length == 0 ||
+        snapshot.data["data"].length == null) {
+      return SingleChildScrollView(
+        
+        child: Column(children: <Widget>[
+        
+        Container(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 0.0),
+            child: Image.network(
+                "https://media1.giphy.com/media/2rtQMJvhzOnRe/giphy.gif?cid=ecf05e479rhjt6b7vaal79917sx69p6zugqkbfn2qsdfqysc&rid=giphy.gif"),
           ),
-            
-        );
-      }
+        ),
+        Container(
+            child: Padding(
+          padding: EdgeInsets.fromLTRB(0, 20.0, 0, 0),
+          child: Text(
+            "No results for \"${_search}\", sorry :(",
+            style: TextStyle(color: Color(0xFF848484)),
+          ),
+        ))
+      ])
       );
+    } else
+      return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
+          itemCount: snapshot.data["data"].length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              child: Image.network(
+                snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+                height: 300.0,
+                fit: BoxFit.cover,
+              ),
+            );
+          });
   }
 }
