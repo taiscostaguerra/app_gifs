@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(color: Color(0xFF848484)),
           ),
         )),
-        
+        //TO NO MASTER!
       ]));
     } else
       return GridView.builder(
