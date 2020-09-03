@@ -22,10 +22,10 @@ class _HomePageState extends State<HomePage> {
 
     if (_search == "" || _search == null) {
       response = await http.get(
-          "https://api.giphy.com/v1/gifs/trending?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&limit=20&rating=g");
+          "https://api.giphy.com/v1/gifs/trending?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&limit=19&rating=g");
     } else
       response = await http.get(
-          "https://api.giphy.com/v1/gifs/search?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&q=$_search&limit=20&offset=$_offset&rating=g&lang=en");
+          "https://api.giphy.com/v1/gifs/search?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&q=$_search&limit=29&offset=$_offset&rating=g&lang=en");
 
     return json.decode(response.body);
   }
@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     _getGifs().then((map) {
       print(map);
     });
+    
   }
 
   int _getCount(List data) {}
@@ -126,6 +127,7 @@ class _HomePageState extends State<HomePage> {
                       return Container();
                     else
                       return _createGifTable(context, snapshot);
+                      
                 }
               }),
         ),
@@ -161,14 +163,22 @@ class _HomePageState extends State<HomePage> {
     } else
       return GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
-          itemCount: snapshot.data["data"].length + 2,
+              crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0, ),
+          itemCount: snapshot.data["data"].length + 1,
+          shrinkWrap: true,
           itemBuilder: (context, index) {
             if(index == snapshot.data["data"].length) {
-                return RaisedButton(
-                  onPressed: (){},
-                  color: Colors.blue,
-                  );
+                return GestureDetector(
+                  child: Container(
+                    height: 20.0,
+                    width: 10.0,
+                    color: Color(0xFF333232),
+                    child: Icon(
+                      Icons.add,
+                      color: Color(0xFF3FDB90),
+                    )
+                  )
+                );
             } else if (index < snapshot.data["data"].length) {
                return GestureDetector(
               child: Image.network(
