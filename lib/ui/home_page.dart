@@ -39,6 +39,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  int _getCount(List data) {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,30 +104,32 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Expanded(
-            child: FutureBuilder(
-                future: _getGifs(),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                    case ConnectionState.none:
-                      return Container(
-                        width: 200.0,
-                        height: 200.0,
-                        alignment: Alignment.center,
-                        child: RefreshProgressIndicator(
-                          backgroundColor: Color(0xFF333232),
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Color(0xFF3FDB90)),
-                          strokeWidth: 2.0,
-                        ),
-                      );
-                    default:
-                      if (snapshot.hasError)
-                        return Container();
-                      else
-                        return _createGifTable(context, snapshot);
-                  }
-                }))
+          child: FutureBuilder(
+              future: _getGifs(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return Container(
+                      width: 200.0,
+                      height: 200.0,
+                      alignment: Alignment.center,
+                      child: RefreshProgressIndicator(
+                        backgroundColor: Color(0xFF333232),
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xFF3FDB90)),
+                        strokeWidth: 2.0,
+                      ),
+                    );
+                  default:
+                    if (snapshot.hasError)
+                      return Container();
+                    else
+                      return _createGifTable(context, snapshot);
+                }
+              }),
+        ),
+        
       ]),
     );
   }
@@ -134,14 +138,14 @@ class _HomePageState extends State<HomePage> {
     if (snapshot.data["data"].length == 0 ||
         snapshot.data["data"].length == null) {
       return SingleChildScrollView(
-        
-        child: Column(children: <Widget>[
-        
+          child: Column(children: <Widget>[
         Container(
           child: Padding(
             padding: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 0.0),
             child: Image.network(
-                "https://media1.giphy.com/media/2rtQMJvhzOnRe/giphy.gif?cid=ecf05e479rhjt6b7vaal79917sx69p6zugqkbfn2qsdfqysc&rid=giphy.gif"),
+              "https://media1.giphy.com/media/2rtQMJvhzOnRe/giphy.gif?cid=ecf05e479rhjt6b7vaal79917sx69p6zugqkbfn2qsdfqysc&rid=giphy.gif",
+              width: 200.0,
+            ),
           ),
         ),
         Container(
@@ -151,22 +155,30 @@ class _HomePageState extends State<HomePage> {
             "No results for \"${_search}\", sorry :(",
             style: TextStyle(color: Color(0xFF848484)),
           ),
-        ))
-      ])
-      );
+        )),
+        
+      ]));
     } else
       return GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
-          itemCount: snapshot.data["data"].length,
+          itemCount: snapshot.data["data"].length + 2,
           itemBuilder: (context, index) {
-            return GestureDetector(
+            if(index == snapshot.data["data"].length) {
+                return RaisedButton(
+                  onPressed: (){},
+                  color: Colors.blue,
+                  );
+            } else if (index < snapshot.data["data"].length) {
+               return GestureDetector(
               child: Image.network(
                 snapshot.data["data"][index]["images"]["fixed_height"]["url"],
                 height: 300.0,
                 fit: BoxFit.cover,
               ),
             );
+            }
+            
           });
   }
 }
