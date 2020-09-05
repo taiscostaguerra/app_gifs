@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'dart:async';
+import 'package:app_gifs/ui/gif_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:transparent_image/transparent_image.dart';
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
     if (_search == "" || _search == null) {
       response = await http.get(
-          "https://api.giphy.com/v1/gifs/trending?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&limit=19&rating=g");
+          "https://api.giphy.com/v1/gifs/trending?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&limit=35&rating=g");
     } else
       response = await http.get(
           "https://api.giphy.com/v1/gifs/search?api_key=ZLbE5RCSy9Ebz3Ka0UStCWCTfEs5Q4L0&q=$_search&limit=29&offset=$_offset&rating=g&lang=en");
@@ -40,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     
   }
 
-  int _getCount(List data) {}
+  
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +101,7 @@ class _HomePageState extends State<HomePage> {
             onChanged: (text) {
               setState(() {
                 _search = text;
+                _offset = 0;
               });
             },
           ),
@@ -158,7 +160,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(color: Color(0xFF848484)),
           ),
         )),
-        //TO NO MASTER!
+        
       ]));
     } else
       return GridView.builder(
@@ -177,7 +179,13 @@ class _HomePageState extends State<HomePage> {
                       Icons.add,
                       color: Color(0xFF3FDB90),
                     )
-                  )
+                  ),
+                  onTap: (){
+                    // ta dando set state em tudo, tem q ajeitar
+                    setState(() {
+                      _offset += 19;
+                    });
+                  },
                 );
             } else if (index < snapshot.data["data"].length) {
                return GestureDetector(
@@ -186,6 +194,12 @@ class _HomePageState extends State<HomePage> {
                 height: 300.0,
                 fit: BoxFit.cover,
               ),
+              onTap: (){
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => GifPage(snapshot.data["data"][index]))
+                  );
+              },
             );
             }
             
