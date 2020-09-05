@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
               child: FadeInImage.memoryNetwork(
                 height: 300.0,
                 fit: BoxFit.cover,
-                placeholder: null, 
+                placeholder: kTransparentImage, 
                 image: snapshot.data["data"][index]["images"]["fixed_height"]["url"]),
               onTap: (){
                 Navigator.push(
