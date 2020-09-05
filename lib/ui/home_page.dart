@@ -189,17 +189,20 @@ class _HomePageState extends State<HomePage> {
                 );
             } else if (index < snapshot.data["data"].length) {
                return GestureDetector(
-              child: Image.network(
-                snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+              child: FadeInImage.memoryNetwork(
                 height: 300.0,
                 fit: BoxFit.cover,
-              ),
+                placeholder: null, 
+                image: snapshot.data["data"][index]["images"]["fixed_height"]["url"]),
               onTap: (){
                 Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => GifPage(snapshot.data["data"][index]))
                   );
               },
+              onLongPress:  (){
+              Share.share(snapshot.data["data"][index]["images"]["fixed_height"]["url"]);
+            },
             );
             }
             
